@@ -1,0 +1,70 @@
+version: '3'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver-estadocuenta
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P prueba123! -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 50
+      start_period: 10s
+    ports:
+      - "1442:1433"  # Cambiando el puerto del host a 1441
+    environment:
+      SA_PASSWORD: "prueba123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_HOSTNAME: "mssqlserver19"
+    volumes:
+      - sqlserverdata_estadocuenta2:/var/opt/mssql
+      - ./scripts:/scripts
+    networks:
+      - my-net-estadocuenta
+
+  # db-init:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   container_name: db-init-estadocuenta
+  #   depends_on:
+  #     sqlserver:
+  #       condition: service_healthy
+  #   command: /bin/bash -c "sleep 10s  && /opt/mssql-tools/bin/sqlcmd -S sqlserver-estadocuenta,1433 -U sa -P prueba123! -i /scripts/script.sql"
+  #   volumes:
+  #     - ./scripts:/scripts
+  #   networks:
+  #    - my-net-estadocuenta
+  #   restart: "no"
+
+  backend:
+    image: backend_estadocuenta:latest
+    build:
+      context: .
+      dockerfile: EstadoCuenta_BackEnd/Dockerfile-BackEnd
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    ports:
+      - 5141:5141
+    networks:
+      - my-net-estadocuenta    
+
+  frontend:
+    image: frontend_estadocuenta:latest
+    build:
+      context: .
+      dockerfile: EstadoCuenta_FrontEnd/Dockerfile-FrontEnd
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - 5140:5140
+    networks:
+      - my-net-estadocuenta
+
+networks:
+  my-net-estadocuenta:
+    driver: bridge
+
+volumes:
+  sqlserverdata_estadocuenta2:
+    driver: local

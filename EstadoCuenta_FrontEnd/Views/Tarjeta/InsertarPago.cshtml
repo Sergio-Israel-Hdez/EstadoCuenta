@@ -1,0 +1,55 @@
+﻿@model EstadoCuenta_FrontEnd.Models.InsertarPagoCommandDTO
+
+@{
+    ViewData["Title"] = "InsertarPago";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>InsertarPago</h1>
+
+<h4>InsertarPagoCommandDTO</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach (var error in ViewBag.Error)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
+        <form asp-action="InsertarPago">
+            @* <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Fecha" class="control-label"></label>
+                <input asp-for="Fecha" class="form-control" />
+                <span asp-validation-for="Fecha" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="Monto" class="control-label"></label>
+                <input asp-for="Monto" class="form-control" />
+                <span asp-validation-for="Monto" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TarjetaID" class="control-label"></label>
+                <input asp-for="TarjetaID" class="form-control" />
+                <span asp-validation-for="TarjetaID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
