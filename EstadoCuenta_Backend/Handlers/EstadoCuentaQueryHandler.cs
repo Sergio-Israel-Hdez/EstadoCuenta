@@ -9,17 +9,18 @@ namespace EstadoCuenta_Backend.Handlers
 {
     public class EstadoCuentaQueryHandler
     {
-        private readonly string _connectionString;
+        private string _connectionString;
         private readonly IMapper _mapper;
-
-        public EstadoCuentaQueryHandler(string connectionString,IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public EstadoCuentaQueryHandler(IConfiguration configuration,IMapper mapper)
         {
-            _connectionString = connectionString;
+            _configuration = configuration;
             _mapper = mapper;
         }
 
         public async Task<EstadoCuentaResponseDTO> HandleAsync(EstadoCuentaQuery query)
-        {
+        { 
+            _connectionString = _configuration.GetConnectionString("DefaultConnection"); 
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();

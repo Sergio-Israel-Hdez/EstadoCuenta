@@ -8,17 +8,18 @@ namespace EstadoCuenta_Backend.Handlers
 {
     public class TransaccionesMensualesQueryHandler
     {
-        private readonly string _connectionString;
+        private string _connectionString;
         private readonly IMapper _mapper;
-        public TransaccionesMensualesQueryHandler(string connectionString,IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public TransaccionesMensualesQueryHandler(IConfiguration configuration,IMapper mapper)
         {
-            _connectionString = connectionString;
+            _configuration = configuration; 
             _mapper = mapper;
         }
         public async Task<List<TransaccionesMensualesResponseDTO>> HandleAsync(TransaccionesMensualesQuery query)
         {
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
             var responseList = new List<TransaccionesMensualesResponseDTO>();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.OpenAsync();

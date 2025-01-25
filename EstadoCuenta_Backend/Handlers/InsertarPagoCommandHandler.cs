@@ -7,16 +7,17 @@ namespace EstadoCuenta_Backend.Handlers
 {
     public class InsertarPagoCommandHandler
     {
-        private readonly string _connectionString;
+        private string _connectionString;
         private readonly IMapper _mapper;
-        public InsertarPagoCommandHandler(string connectionString,IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public InsertarPagoCommandHandler(IConfiguration configuration,IMapper mapper)
         {
-            _connectionString = connectionString;
+            _configuration = configuration;
             _mapper = mapper;
         }
-
         public async Task HandleAsync(InsertarPagoCommandDTO commandDto)
         {
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
             var command = _mapper.Map<InsertarPagoCommand>(commandDto);
             using (var connection = new SqlConnection(_connectionString))
             {

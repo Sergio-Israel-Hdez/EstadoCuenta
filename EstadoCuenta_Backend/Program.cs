@@ -4,30 +4,30 @@ using EstadoCuenta_Backend.Services.Validators;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://*:5141");
+//builder.WebHost.UseUrls("http://*:5141");
 builder.Services.AddHealthChecks();
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(EstadoCuenta_Backend.Models.DTO.MappingProfile));
 
-builder.Services.AddSingleton<EstadoCuentaQueryHandler>(service =>
+builder.Services.AddSingleton(service =>
 {
-    return new EstadoCuentaQueryHandler(builder.Configuration.GetConnectionString("DefaultConnection"), service.GetRequiredService<IMapper>());
+    return new EstadoCuentaQueryHandler(builder.Configuration, service.GetRequiredService<IMapper>());
 });
-builder.Services.AddSingleton<InsertarCompraCommandHandler>(service =>
+builder.Services.AddSingleton(service =>
 {
-    return new InsertarCompraCommandHandler(builder.Configuration.GetConnectionString("DefaultConnection"), service.GetRequiredService<IMapper>());
+    return new InsertarCompraCommandHandler(builder.Configuration, service.GetRequiredService<IMapper>());
 });
 builder.Services.AddSingleton<InsertarPagoCommandHandler>(service =>
 {
-    return new InsertarPagoCommandHandler(builder.Configuration.GetConnectionString("DefaultConnection"), service.GetRequiredService<IMapper>());
+    return new InsertarPagoCommandHandler(builder.Configuration, service.GetRequiredService<IMapper>());
 });
 builder.Services.AddSingleton<TransaccionesMensualesQueryHandler>(service =>
 {
-    return new TransaccionesMensualesQueryHandler(builder.Configuration.GetConnectionString("DefaultConnection"), service.GetRequiredService<IMapper>());
+    return new TransaccionesMensualesQueryHandler(builder.Configuration, service.GetRequiredService<IMapper>());
 });
 builder.Services.AddSingleton<ComprasQueryHandler>(service =>
 {
-    return new ComprasQueryHandler(builder.Configuration.GetConnectionString("DefaultConnection"), service.GetRequiredService<IMapper>());
+    return new ComprasQueryHandler(builder.Configuration, service.GetRequiredService<IMapper>());
 });
 builder.Services.AddControllers()
     .AddFluentValidation(config =>

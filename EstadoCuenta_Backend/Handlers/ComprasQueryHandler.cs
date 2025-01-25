@@ -8,16 +8,17 @@ namespace EstadoCuenta_Backend.Handlers
 {
     public class ComprasQueryHandler
     {
-        private readonly string _connectionString;
+        private string _connectionString;
         private readonly IMapper _mapper;
-        public ComprasQueryHandler(string connectionString, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public ComprasQueryHandler(IConfiguration configuration, IMapper mapper)
         {
-            _connectionString = connectionString;
+            _configuration = configuration;
             _mapper = mapper;
         }
         public async Task<List<ComprasResponseDTO>> HandleAsync(ComprasQuery query)
         {
-
+            _connectionString = _configuration.GetConnectionString("DefaultConnection");
             var responseList = new List<ComprasResponseDTO>();
 
             using (var connection = new SqlConnection(_connectionString))
@@ -38,7 +39,7 @@ namespace EstadoCuenta_Backend.Handlers
                         {
                             CompraId = (int)reader["CompraId"],
                             Fecha = (DateTime)reader["Fecha"],
-                            Descripcion = reader["Descripcion"].ToString(),
+                            Descripcion = (string)reader["Descripcion"],
                             Monto = (decimal)reader["Monto"],
                             TarjetaID = (int)reader["TarjetaID"]
                         };
